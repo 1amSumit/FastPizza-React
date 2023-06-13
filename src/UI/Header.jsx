@@ -1,11 +1,15 @@
-import { NavLink } from "react-router-dom";
-import SearchOrder from "../features/order/SearchOrder";
+import { NavLink } from 'react-router-dom';
+import SearchOrder from '../features/order/SearchOrder';
+import Username from '../features/user/Username';
 
 const Header = () => {
   return (
-    <header>
-      <NavLink to="/">Fast React Pizza Co.</NavLink>
+    <header className="border-b border-stone-200  bg-yellow-500 px-4 py-3 uppercase sm:px-6">
+      <NavLink to="/" className={'tracking-widest'}>
+        Fast React Pizza Co.
+      </NavLink>
       <SearchOrder />
+      <Username />
     </header>
   );
 };
