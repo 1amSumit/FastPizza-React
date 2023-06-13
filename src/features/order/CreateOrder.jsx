@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Form, redirect } from "react-router-dom";
+import { Form, redirect, useNavigate, useActionData } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 
 // https://uibakery.io/regex-library/phone-number
@@ -33,8 +32,11 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
-  const [withPriority, setWithPriority] = useState(false);
+  const navigation = useNavigate;
+  const formErrors = useActionData();
   const cart = fakeCart;
+
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <div>
@@ -51,6 +53,7 @@ function CreateOrder() {
           <div>
             <input type="tel" name="phone" required />
           </div>
+          {formErrors?.phone && <p>{formErrors.phone}</p>}
         </div>
 
         <div>
@@ -61,19 +64,15 @@ function CreateOrder() {
         </div>
 
         <div>
-          <input
-            type="checkbox"
-            name="priority"
-            id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
-          />
+          <input type="checkbox" name="priority" id="priority" />
           <label htmlFor="priority">Want to yo give your order priority?</label>
         </div>
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button>Order now</button>
+          <button disabled={isSubmitting}>
+            {isSubmitting ? "Placing order..." : "Order now"}
+          </button>
         </div>
       </Form>
     </div>
@@ -91,6 +90,14 @@ export const action = async ({ params, request }) => {
     cart: JSON.parse(data.cart),
     priority: data.priority === "on",
   };
+  const errors = {};
+
+  if (!isValidPhone(order.phone)) {
+    errors.phone =
+      "Pease provide your phone number we need it to contact with you.";
+  }
+  if (Object.keys(order).length > 0) return errors;
+
   const newOrder = await createOrder(order);
 
   return redirect(`/order/${newOrder.id}`);
