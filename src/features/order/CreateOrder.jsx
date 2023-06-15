@@ -2,6 +2,7 @@ import { Form, redirect, useNavigate, useActionData } from 'react-router-dom';
 import { createOrder } from '../../services/apiRestaurant';
 
 import Button from '../../UI/Button';
+import Username from '../user/Username';
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -47,7 +48,13 @@ function CreateOrder() {
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input className="input" type="text" name="customer" required />
+          <input
+            className="input"
+            type="text"
+            name="customer"
+            defaultValue={Username}
+            required
+          />
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
