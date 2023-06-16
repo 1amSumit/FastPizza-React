@@ -1,12 +1,14 @@
-import { cartActions } from '../../store/cartSlice';
+import { cartActions, getCurrentPizzaQuantity } from '../../store/cartSlice';
 import { formatCurrency } from '../../utils/helpers';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DeleteItem from './DeleteItem';
 import UpdateItemQuantity from './UpdateItemQuantity';
 
 function CartItem({ item }) {
   const dispatch = useDispatch();
   const { pizzaId, name, quantity, totalPrice } = item;
+
+  const currentQuantity = useSelector(getCurrentPizzaQuantity(pizzaId));
 
   const deleteItem = (pizzaId) => {
     dispatch(cartActions.deleteItem(pizzaId));
@@ -20,7 +22,7 @@ function CartItem({ item }) {
       <div className="flex items-center justify-between sm:gap-6">
         <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
       </div>
-      <UpdateItemQuantity pizzaId={pizzaId} />
+      <UpdateItemQuantity pizzaId={pizzaId} currentQuantity={currentQuantity} />
       <DeleteItem pizzaId={pizzaId} />
     </li>
   );
