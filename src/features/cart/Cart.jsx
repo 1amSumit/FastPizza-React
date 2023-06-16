@@ -1,8 +1,9 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../UI/Button';
 import LinkButton from '../../UI/LinkButton';
 
 import CartItem from './CartItem';
+import { cartActions } from '../../store/cartSlice';
 
 // const fakeCart = [
 //   {
@@ -29,26 +30,45 @@ import CartItem from './CartItem';
 // ];
 
 function Cart() {
+  const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const username = useSelector((state) => state.user.username);
+
+  const hasItem = useSelector((state) => state.cart.cart.length > 0);
+
+  const clearCart = () => {
+    dispatch(cartActions.clearCart());
+  };
   return (
     <div className="px-4 py-3">
       <LinkButton to="/menu"> &larr; Back to menu</LinkButton>
 
-      <h2 className="mt-7 text-xl font-semibold">Your cart, {username}</h2>
+      {hasItem ? (
+        <h2 className="mt-7 text-xl font-semibold">Your cart, {username}</h2>
+      ) : (
+        <h2 className="mt-7 px-4 py-2 font-bold">
+          Your cart is still empty start adding some pizzas!!
+        </h2>
+      )}
 
       <ul className="mt-3 divide-y divide-stone-200 border-b">
-        {cart.map((item) => (
-          <CartItem item={item} key={item.key} />
+        {cart.map((item, i) => (
+          <CartItem item={item} key={i} />
         ))}
       </ul>
 
       <div className="mt-6 space-x-2">
-        <Button type="primary" to={'/order/new'}>
-          Order pizzas
-        </Button>
+        {hasItem && (
+          <Button type="primary" to={'/order/new'}>
+            Order pizzas
+          </Button>
+        )}
 
-        <Button type="secondary">Clear cart</Button>
+        {hasItem && (
+          <Button onClick={clearCart} type="secondary">
+            Clear cart
+          </Button>
+        )}
         {/* <button>Clear cart</button> */}
       </div>
     </div>
